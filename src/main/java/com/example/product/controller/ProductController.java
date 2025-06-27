@@ -1,5 +1,6 @@
 package com.example.product.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.product.dto.ProductDto;
 import com.example.product.entity.Product;
 import com.example.product.service.ProductService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -51,17 +54,26 @@ public class ProductController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Page<Product>> getAllProducts(
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<Page<Product>> getAllProducts(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-	    Page<Product> products = productService.getAllProducts(page, size);
-	    return ResponseEntity.ok(products);
+		Page<Product> products = productService.getAllProducts(page, size);
+		return ResponseEntity.ok(products);
 	}
 
 	@GetMapping("/search")
 	public ResponseEntity<List<Product>> searchProductsByName(@RequestParam String name) {
 		return ResponseEntity.ok(productService.searchProduct(name));
+	}
+
+	@PostMapping("/import")
+	public ResponseEntity<?> importExcel(@RequestParam("file") MultipartFile file) {
+		return productService.importProductsFromExcel(file);
+	}
+
+	@GetMapping("/template")
+	public void downloadTemplate(HttpServletResponse response) throws IOException {
+		productService.downloadExcelTemplate(response);
 	}
 
 }

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepo productRepo;
@@ -39,6 +39,7 @@ public class ProductServiceImpl {
 	@Autowired
 	private CategoryRepo categoryRepo;
 
+	@Override
 	public Product createProduct(ProductDto dto) throws ResouceNotFoundException {
 		Category category = categoryRepo.findById(dto.getCategoryId())
 				.orElseThrow(() -> new ResouceNotFoundException("Category not found"));
@@ -55,11 +56,13 @@ public class ProductServiceImpl {
 		return productRepo.save(product);
 	}
 
+	@Override
 	public Product getProductById(Long id) throws ResouceNotFoundException {
 		return productRepo.findById(id)
 				.orElseThrow(() -> new ResouceNotFoundException("Product not found with id " + id));
 	}
 
+	@Override
 	public Product updateProduct(Long id, ProductDto dto) throws ResouceNotFoundException {
 		Product product = getProductById(id);
 
@@ -77,19 +80,23 @@ public class ProductServiceImpl {
 		return productRepo.save(product);
 	}
 
+	@Override
 	public void deleteProduct(Long id) throws ResouceNotFoundException {
 		Product product = getProductById(id);
 		productRepo.delete(product);
 	}
 
+	@Override
 	public Page<Product> getAllProducts(int offset, int pageSize) {
 		return productRepo.findAll(PageRequest.of(offset, pageSize));
 	}
 
+	@Override
 	public List<Product> searchProduct(String name) {
 		return productRepo.findByNameContainingIgnoreCase(name);
 	}
 
+	@Override
 	public ResponseEntity<?> importProductsFromExcel(MultipartFile file) {
 		List<String> errors = new ArrayList<>();
 		List<Product> validProducts = new ArrayList<>();
@@ -162,6 +169,7 @@ public class ProductServiceImpl {
 		};
 	}
 
+	@Override
 	public void downloadExcelTemplate(HttpServletResponse response) throws IOException {
 		Workbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet("Products");
@@ -179,6 +187,12 @@ public class ProductServiceImpl {
 
 		workbook.write(response.getOutputStream());
 		workbook.close();
+	}
+
+	@Override
+	public Map<String, Object> importProducts(MultipartFile file) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -10,17 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.product.dto.ProductDto;
 import com.example.product.entity.Product;
+import com.example.product.exception.ResouceNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface ProductService {
-	Product createProduct(ProductDto dto);
+	Product createProduct(ProductDto dto) throws ResouceNotFoundException;
 
-	Product getProductById(Long id);
+	Product getProductById(Long id) throws ResouceNotFoundException;
 
-	Product updateProduct(Long id, ProductDto dto);
+	Product updateProduct(Long id, ProductDto dto) throws ResouceNotFoundException;
 
-	void deleteProduct(Long id);
+	void deleteProduct(Long id) throws ResouceNotFoundException;
 
 	List<Product> searchProduct(String field);
 

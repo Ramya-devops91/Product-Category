@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.product.dto.ProductDto;
 import com.example.product.entity.Product;
+import com.example.product.exception.ResouceNotFoundException;
 import com.example.product.service.ProductService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,22 +34,22 @@ public class ProductController {
 	private ProductService productService;
 
 	@PostMapping
-	public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDto dto) {
+	public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDto dto) throws ResouceNotFoundException {
 		return new ResponseEntity<>(productService.createProduct(dto), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto dto) {
+	public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto dto) throws ResouceNotFoundException {
 		return ResponseEntity.ok(productService.updateProduct(id, dto));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+	public ResponseEntity<Product> getProductById(@PathVariable Long id) throws ResouceNotFoundException {
 		return ResponseEntity.ok(productService.getProductById(id));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) throws ResouceNotFoundException {
 		productService.deleteProduct(id);
 		return ResponseEntity.noContent().build();
 	}
